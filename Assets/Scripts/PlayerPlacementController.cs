@@ -10,6 +10,16 @@ public class PlayerPlacementController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+            PlaceObject();
+        }
+    }
+
+    private void PlaceObject()
+    {
+        HexModel hexModel = PlayerModel.SelectedHex.GetComponent<HexModel>();
+        if (!hexModel.IsOccupied)
+        {
+            hexModel.IsOccupied = true;
             Vector2 pos = PlayerModel.SelectedHex.transform.position;
             int sortingOrder = PlayerModel.SelectedHex.GetComponent<HexView>().GetSortingLayer() + 1;
 
