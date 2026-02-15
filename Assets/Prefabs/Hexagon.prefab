@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8013868698984076503}
   - component: {fileID: 8297013059079879662}
   - component: {fileID: 7008060106163562857}
+  - component: {fileID: 5236465185192185743}
   m_Layer: 0
   m_Name: Hexagon
   m_TagString: Hex
@@ -98,6 +99,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sp: {fileID: 1315808235833626348}
+  HexModel: {fileID: 5236465185192185743}
+--- !u!114 &5236465185192185743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3272070616292860303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9eed8288c1153242b6898859c3a47a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsOccupied: 0
   DefaultColor: {r: 1, g: 1, b: 1, a: 1}
   SelectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!1 &4595434566995288138
