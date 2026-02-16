@@ -11,7 +11,33 @@ public class PlayerInteractController : MonoBehaviour
     public GameObject Player;
     public GameObject Pivot;
 
-    private void FixedUpdate()
+    private void Update()
+    {
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorldPos.z = 0f;
+
+        float distanceFromPlayer = Vector2.Distance(mouseWorldPos, Player.transform.position);
+
+        if(distanceFromPlayer <= PlayerModel.ReachDistance)
+        {
+            transform.position = mouseWorldPos;
+        }
+        else
+        {
+            float deltaX = mouseWorldPos.x - Player.transform.position.x;
+            float deltaY = mouseWorldPos.y - Player.transform.position.y;
+
+            float angleRad = Mathf.Atan2(deltaY, deltaX);
+
+            deltaX = PlayerModel.ReachDistance * Mathf.Cos(angleRad);
+            deltaY = PlayerModel.ReachDistance * Mathf.Sin(angleRad);
+
+            transform.localPosition = new Vector2(deltaX, deltaY);
+        }
+        
+    }
+
+    private void RotateAccordingToVelocity()
     {
         oldPosition = currentPosition;
         currentPosition = Player.transform.position;

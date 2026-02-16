@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerModel : MonoBehaviour
 {
     public float Speed;
+    public float ReachDistance;
     public GameObject SelectedHex;
     public GameObject OldSelectedHex;
 
