@@ -63,7 +63,7 @@ public class PlayerInteractController : MonoBehaviour
                     oldHexView.SetDeselected();
                 }
                 PlayerModel.SelectedHex = collision.gameObject;
-                Debug.Log(collision.gameObject.name);
+            //Debug.Log(collision.gameObject.name);
 
                 HexView selectedHexView = PlayerModel.SelectedHex.GetComponent<HexView>();
                 selectedHexView.SetSelected();
