@@ -3,12 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Unity.VisualScripting;
+using TMPro;
 
-public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    public Image image;
+    [Header("UI")]
+    public Image Icon;
+    public int Amount;
+    public TextMeshProUGUI AmountText;
+
+    [HideInInspector] public Item Item;
     [HideInInspector] public Transform ParentAfterDrag;
     [HideInInspector] public Transform ParentDuringDrag;
+
+    private void Awake()
+    {
+        AmountText.SetText($"{Amount}");
+    }
+    public void InitializeItem(Item newItem)
+    {
+        Item = newItem;
+        Icon.sprite = newItem.Icon;
+        name = newItem.name;
+        AmountText.SetText($"{Amount}");
+    }
+
+    public void IncreaseAmount(int num)
+    {
+        Amount += num;
+        AmountText.SetText($"{Amount}");
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         ParentAfterDrag = transform.parent;
@@ -16,7 +42,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.SetParent(ParentDuringDrag);
         transform.SetAsLastSibling();
 
-        image.raycastTarget = false;
+        Icon.raycastTarget = false;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -29,7 +55,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.SetParent(ParentAfterDrag);
         gameObject.transform.localScale = Vector3.one;
 
-        image.raycastTarget = true;
+        Icon.raycastTarget = true;
     }
 }
 
