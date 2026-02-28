@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class PlayerInteractController : MonoBehaviour
 {
@@ -10,6 +12,9 @@ public class PlayerInteractController : MonoBehaviour
     public PlayerModel PlayerModel;
     public GameObject Player;
     public GameObject Pivot;
+    public Tilemap Tilemap;
+
+    public Vector3Int LastTilePos = new Vector3Int(int.MinValue, int.MinValue, int.MinValue);
 
     private void Update()
     {
@@ -56,18 +61,54 @@ public class PlayerInteractController : MonoBehaviour
         switch (collision.gameObject.tag)
         {
             case "Hex":
-                if (PlayerModel.SelectedHex != null)
+                if (PlayerModel.SelectedTile != null)
                 {
-                    PlayerModel.OldSelectedHex = PlayerModel.SelectedHex;
-                    HexView oldHexView = PlayerModel.OldSelectedHex.GetComponent<HexView>();
-                    oldHexView.SetDeselected();
-                }
-                PlayerModel.SelectedHex = collision.gameObject;
-            //Debug.Log(collision.gameObject.name);
+                    //PlayerModel.OldSelectedHex = PlayerModel.SelectedHex;
+                    //HexView oldHexView = PlayerModel.OldSelectedHex.GetComponent<HexView>();
+                    //oldHexView.SetDeselected();
 
-                HexView selectedHexView = PlayerModel.SelectedHex.GetComponent<HexView>();
-                selectedHexView.SetSelected();
+                    PlayerModel.OldTile = PlayerModel.SelectedTile;
+                }
+                //PlayerModel.SelectedHex = collision.gameObject;
+
+                //Vector3 worldPoint = collision.ClosestPoint(transform.position);
+                Vector3Int tilePos = Tilemap.WorldToCell(transform.position);
+                TileBase newTile = Tilemap.GetTile(tilePos);
+
+                //PlayerModel.SelectedTile = newTile;
+
+                Debug.Log(collision.gameObject.name);
+
+                //HexView selectedHexView = PlayerModel.SelectedHex.GetComponent<HexView>();
+                //selectedHexView.SetSelected();
                 break;
+        }
+    }
+
+    private void LateUpdate()
+    {
+        Vector3 worldPos = TilemapRaycast.ProjectPointOntoTilemapPlane(Tilemap, transform.position);
+        Vector3Int tilePos = Tilemap.WorldToCell(worldPos);
+
+        // if tiles haven't changed
+        if (tilePos == LastTilePos) return;
+
+        // if left tile -> restore original color
+        if (LastTilePos.x != int.MinValue)
+        {
+            Tilemap.SetColor(LastTilePos, Color.white);
+        }
+
+        if (Tilemap.HasTile(tilePos))
+        {
+            Tilemap.SetTileFlags(tilePos, TileFlags.None);
+            Tilemap.SetColor(tilePos, Color.yellow);
+
+            LastTilePos = tilePos;
+        }
+        else
+        {
+            LastTilePos = tilePos;
         }
     }
 }
