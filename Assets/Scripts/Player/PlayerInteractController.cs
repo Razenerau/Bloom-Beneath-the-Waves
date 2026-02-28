@@ -12,9 +12,8 @@ public class PlayerInteractController : MonoBehaviour
     public PlayerModel PlayerModel;
     public GameObject Player;
     public GameObject Pivot;
-    public Tilemap Tilemap;
 
-    public Vector3Int LastTilePos = new Vector3Int(int.MinValue, int.MinValue, int.MinValue);
+    //public Vector3Int LastTilePos = new Vector3Int(int.MinValue, int.MinValue, int.MinValue);
 
     private void Update()
     {
@@ -61,19 +60,18 @@ public class PlayerInteractController : MonoBehaviour
         switch (collision.gameObject.tag)
         {
             case "Hex":
-                if (PlayerModel.SelectedTile != null)
+                //if (PlayerModel.SelectedTile != null)
                 {
                     //PlayerModel.OldSelectedHex = PlayerModel.SelectedHex;
                     //HexView oldHexView = PlayerModel.OldSelectedHex.GetComponent<HexView>();
                     //oldHexView.SetDeselected();
 
-                    PlayerModel.OldTile = PlayerModel.SelectedTile;
+                    //PlayerModel.OldTile = PlayerModel.SelectedTile;
                 }
                 //PlayerModel.SelectedHex = collision.gameObject;
 
                 //Vector3 worldPoint = collision.ClosestPoint(transform.position);
-                Vector3Int tilePos = Tilemap.WorldToCell(transform.position);
-                TileBase newTile = Tilemap.GetTile(tilePos);
+            
 
                 //PlayerModel.SelectedTile = newTile;
 
@@ -87,28 +85,29 @@ public class PlayerInteractController : MonoBehaviour
 
     private void LateUpdate()
     {
-        Vector3 worldPos = TilemapRaycast.ProjectPointOntoTilemapPlane(Tilemap, transform.position);
-        Vector3Int tilePos = Tilemap.WorldToCell(worldPos);
+        Vector3 worldPos = TilemapRaycast.ProjectPointOntoTilemapPlane(PlayerModel.CurrentTilemap, transform.position);
+        Vector3Int tilePos = PlayerModel.CurrentTilemap.WorldToCell(worldPos);
+        PlayerModel.SelectedTilePos = tilePos;
 
         // if tiles haven't changed
-        if (tilePos == LastTilePos) return;
+        if (tilePos == PlayerModel.LastTilePos) return;
 
         // if left tile -> restore original color
-        if (LastTilePos.x != int.MinValue)
+        if (PlayerModel.LastTilePos.x != int.MinValue)
         {
-            Tilemap.SetColor(LastTilePos, Color.white);
+            PlayerModel.CurrentTilemap.SetColor(PlayerModel.LastTilePos, Color.white);
         }
 
-        if (Tilemap.HasTile(tilePos))
+        if (PlayerModel.CurrentTilemap.HasTile(tilePos))
         {
-            Tilemap.SetTileFlags(tilePos, TileFlags.None);
-            Tilemap.SetColor(tilePos, Color.yellow);
+            PlayerModel.CurrentTilemap.SetTileFlags(tilePos, TileFlags.None);
+            PlayerModel.CurrentTilemap.SetColor(tilePos, Color.yellow);
 
-            LastTilePos = tilePos;
+            PlayerModel.LastTilePos = tilePos;
         }
         else
         {
-            LastTilePos = tilePos;
+            PlayerModel.LastTilePos = tilePos;
         }
     }
 }
