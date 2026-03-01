@@ -28,32 +28,29 @@ public class ObjectPlacementController : MonoBehaviour
         }
     }
 
-    private void PlaceObject1()
-    {
-        HexModel hexModel = PlayerModel.SelectedHex.GetComponent<HexModel>();
-        if (!hexModel.IsOccupied)
-        {
-            hexModel.IsOccupied = true;
-            Vector2 pos = PlayerModel.SelectedHex.transform.position;
-            int sortingOrder = PlayerModel.SelectedHex.GetComponent<HexView>().GetSortingLayer() + 1;
-
-            GameObject NewObject = Instantiate(PlaceableObject, pos, Quaternion.identity, SceneObjects.transform);
-            NewObject.GetComponentInChildren<SpriteRenderer>().sortingOrder = sortingOrder;
-        }
-    }
-
     private void PlaceObject()
     {
-        Vector3 tileCenterPos = PlayerModel.CurrentTilemap.GetCellCenterWorld(PlayerModel.SelectedTilePos);
-        Vector3 spawnPos = tileCenterPos + PlayerModel.CurrentTilemap.transform.forward * PlayerModel.PlacementLift;
-
-        GameObject newObject = Instantiate(PlaceableObject, spawnPos, Quaternion.identity, SceneObjects.transform);
-
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
         if (!PlacementSaveData.Instance.OccupiedTilesByScene.ContainsKey(sceneName))
             PlacementSaveData.Instance.OccupiedTilesByScene[sceneName] = new();
 
+        // check if tile exists
+        if (!PlayerModel.CurrentTilemap.HasTile(PlayerModel.SelectedTilePos))
+            return;
+
+        // check if tile is taken by structure
+        if (PlacementSaveData.Instance.OccupiedTilesByScene[sceneName].ContainsKey(PlayerModel.SelectedTilePos))
+            return;
+        
+        // check if the player is occupying the tile
+        if (PlayerModel.PlayerOccupiedTilePos == PlayerModel.SelectedTilePos)
+            return;
+
+        Vector3 tileCenterPos = PlayerModel.CurrentTilemap.GetCellCenterWorld(PlayerModel.SelectedTilePos);
+        Vector3 spawnPos = tileCenterPos + PlayerModel.CurrentTilemap.transform.forward * PlayerModel.PlacementLift;
+
+        GameObject newObject = Instantiate(PlaceableObject, spawnPos, Quaternion.identity, SceneObjects.transform);
         
         PlacementSaveData.Instance.OccupiedTilesByScene[sceneName].Add(PlayerModel.SelectedTilePos, PlaceableObject);
     }

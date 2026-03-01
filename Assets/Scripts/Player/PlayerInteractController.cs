@@ -90,7 +90,7 @@ public class PlayerInteractController : MonoBehaviour
         PlayerModel.SelectedTilePos = tilePos;
 
         // if tiles haven't changed
-        if (tilePos == PlayerModel.LastTilePos) return;
+        //if (tilePos == PlayerModel.LastTilePos) return;
 
         // if left tile -> restore original color
         if (PlayerModel.LastTilePos.x != int.MinValue)
@@ -101,7 +101,27 @@ public class PlayerInteractController : MonoBehaviour
         if (PlayerModel.CurrentTilemap.HasTile(tilePos))
         {
             PlayerModel.CurrentTilemap.SetTileFlags(tilePos, TileFlags.None);
+
+            // if it's unoccupied
             PlayerModel.CurrentTilemap.SetColor(tilePos, Color.yellow);
+
+            string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+
+            if (!PlacementSaveData.Instance.OccupiedTilesByScene.ContainsKey(sceneName))
+                PlacementSaveData.Instance.OccupiedTilesByScene[sceneName] = new();
+
+            Vector3 playerPosOnPlane = TilemapRaycast.ProjectPointOntoTilemapPlane
+                (PlayerModel.CurrentTilemap, PlayerModel.gameObject.transform.position);
+
+            PlayerModel.PlayerOccupiedTilePos = PlayerModel.CurrentTilemap.WorldToCell(playerPosOnPlane);
+
+            // if it's occupied
+            if (PlacementSaveData.Instance.OccupiedTilesByScene[sceneName].ContainsKey(tilePos) ||
+                PlayerModel.PlayerOccupiedTilePos == tilePos)
+            {
+                PlayerModel.CurrentTilemap.SetColor(tilePos, Color.red);
+                
+            }
 
             PlayerModel.LastTilePos = tilePos;
         }
