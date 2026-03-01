@@ -15,8 +15,8 @@ public class PlayerCollision : MonoBehaviour
             case "Pickup":
                 PickUpModel pickUpModel = collision.GetComponent<PickUpModel>();
                 Item item = pickUpModel.item;
-                InventoryManager.AddItem(item);
-                Destroy(collision.gameObject);
+                bool isPickedUp = InventoryManager.AddItem(item);
+                if (isPickedUp) Destroy(collision.gameObject);
                 break;
         }
     }

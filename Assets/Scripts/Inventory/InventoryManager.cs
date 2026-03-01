@@ -7,7 +7,7 @@ public class InventoryManager : MonoBehaviour
     public List<InventorySlotController> inventorySlots = new List<InventorySlotController>();
     public GameObject IntventoryItemPrefab;
 
-    public void AddItem(Item newItem)
+    public bool AddItem(Item newItem)
     {
         foreach (InventorySlotController slot in inventorySlots)
         {
@@ -15,14 +15,16 @@ public class InventoryManager : MonoBehaviour
             if (itemInSlot == null)
             {
                 SpawnNewItem(newItem, slot);
-                return;
+                return true;
             }
             else if (itemInSlot.gameObject.name == newItem.name && newItem.IsStackable && itemInSlot.Amount < newItem.MaxStack)
             {
                 itemInSlot.IncreaseAmount(1);
-                return;
+                return true;
             }
         }
+
+        return false;
     }
 
     public void SpawnNewItem(Item newItem, InventorySlotController inventorySlot)
