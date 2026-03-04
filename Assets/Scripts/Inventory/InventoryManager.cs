@@ -7,6 +7,14 @@ public class InventoryManager : MonoBehaviour
     public List<InventorySlotController> inventorySlots = new List<InventorySlotController>();
     public GameObject IntventoryItemPrefab;
 
+    public int ToolbarSize = 5;
+    public int SelectedSlot = 0;
+
+    public void SetSelectedSlot(int newSlot)
+    {
+        SelectedSlot = newSlot;
+    }
+
     public bool AddItem(Item newItem)
     {
         foreach (InventorySlotController slot in inventorySlots)
